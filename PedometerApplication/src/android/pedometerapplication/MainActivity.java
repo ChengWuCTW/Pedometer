@@ -36,11 +36,14 @@ public class MainActivity extends Activity {
 	static int steps = 0; // records number of steps
 	static TextView stepstv; //textview displaying number of steps
 	static TextView temp; //TEMPORARY VARIABLE
-	static ArrayList<Float> dataPoints = new ArrayList<Float>(); // initializes
-																	// arraylist
-																	// for data
-																	// points
+	static ArrayList<Float> dataPoints = new ArrayList<Float>(); // initializes arraylist for data points
+
 	//static TextView stateTV;
+	
+	static ArrayList<Float> calibration = new ArrayList<Float>(); // initializes arraylist for data points
+	static float threshold = 0.0f;
+	static float crossover = 0.0f;
+	
 
 	static public float[] lowpass(float[] oldIn, float[] in) {
 
@@ -51,8 +54,6 @@ public class MainActivity extends Activity {
 			out[i] = in[i] + alpha * (oldIn[i] - in[i]);
 		}
 
-		//out[0] = 0;
-		//out[1] = 0;
 		lowPassOut_Z = out[2];
 		lowPassOut_Y = out[1];
 		lowPassOut_X = out[0];
@@ -62,9 +63,11 @@ public class MainActivity extends Activity {
 
 	public static float averageData(ArrayList<Float> data) {
 		float sum = 0;
-		for (int i = 0; i < data.size(); i++)
+		for (int i = 0; i < data.size(); i++) {
 			sum += data.get(i);
-		return sum / data.size();
+		}
+		crossover =  sum / data.size();
+		return sum/data.size();
 	}
 	
 	public static float magnitude_of_xyz(float a, float b, float c) {
@@ -127,7 +130,7 @@ public class MainActivity extends Activity {
 				public void onClick(View v) { // reset data on click
 					//float[] empty = { 0, 0, 0 };
 					steps = 0;
-					stepstv.setText("Steps: 0");
+					stepstv.setText("Steps: " + steps);
 				}
 			});
 
@@ -179,58 +182,58 @@ public class MainActivity extends Activity {
 
 			dataPoints.add(magnitude);
 			
+			if (calibration.size() <= 100) {
+				calibration.add(magnitude);
+			}
+			
+			threshold = averageData(calibration);
+	
+			
 			temp.setText("Magnitude is: "+ magnitude);
 
-			/*if (dataPoints.size() > 4) { // begin when enough data is collected
-				previousAverage = averagedData; // record previous average
-				averagedData = averageData(dataPoints); // calculate new average
+			if (dataPoints.size() > 4) { // begin when enough data is collected
+				//previousAverage = averagedData; // record previous average
+				//averagedData = averageData(dataPoints); // calculate new average
 				refresh.setText("Reset");
-				if (Math.abs(averagedData) > 13){
-					state = -1;
-					stateTV.setText("State: SHAKING");
-
-				}
+				
 				switch (state) {
-				case -1:{
-					if (Math.abs(averagedData) < 1){
-						state = 0;
-						stateTV.setText("State: 0");
-					}
-				}
-				case 0: {
-					if (previousAverage > averagedData && averagedData > 2) {
+				case 0:{
+					if (crossover < threshold){
 						state = 1;
-						stateTV.setText("State: 1");
 					}
-					break;
 				}
 				case 1: {
-					if (previousAverage < averagedData && averagedData < 0) {
-						state = 2;
-						stateTV.setText("State: 2");
+					if (crossover > threshold) {
+						state = 0;
+						steps++;
+						stepstv.setText("Steps: " + String.valueOf(steps));
 					}
 					break;
 				}
-				case 2: {
-					if (previousAverage < averagedData && averagedData < -0.5f) {
-						state = 3;
-						stateTV.setText("State: 3");
+				/*case 2: {
+					if (previousAverage < averagedData && averagedData < 0) {
+						state = 2;
 					}
 					break;
 				}
 				case 3: {
+					if (previousAverage < averagedData && averagedData < -0.5f) {
+						state = 3;
+					}
+					break;
+				}
+				case 4: {
 					if (averagedData > 0 && averagedData > 0.5f) {
 						state = 0;
-						stateTV.setText("State: 0");
 						steps++;
 						stepstv.setText("Steps: " + String.valueOf(steps));
 					}
 
 					break;
-				}
+				}*/
 				}
 				dataPoints.clear(); // clear data points
-			}*/
+			}
 		}
 
 		@Override
