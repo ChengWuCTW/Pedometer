@@ -179,7 +179,7 @@ public class MainActivity extends Activity {
 
 			
 			
-			if (calibration.size() <= 100) {
+			if (calibration.size() <= 200) {
 				calibration.add(magnitude);
 				threshold = averageData(calibration);
 			}
@@ -204,12 +204,27 @@ public class MainActivity extends Activity {
 					}
 					case 1: {
 						if (crossover > threshold) {
+							state = 2;
+							//steps++;
+							//output_steps.setText("Steps: " + String.valueOf(steps));
+						}
+						break;
+					}
+					case 2:{
+						if (crossover < threshold){
+							state = 3;
+						}
+					}
+					case 3: {
+						if (crossover > threshold) {
 							state = 0;
 							steps++;
 							output_steps.setText("Steps: " + String.valueOf(steps));
 						}
 						break;
 					}
+					default:
+						break;
 					}
 					dataPoints.clear(); // clear data points
 				}
