@@ -11,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +40,7 @@ public class MainActivity extends Activity {
 																	// arraylist
 																	// for data
 																	// points
-	static TextView stateTV;
+	//static TextView stateTV;
 
 	static public float[] lowpass(float[] oldIn, float[] in) {
 
@@ -109,13 +110,14 @@ public class MainActivity extends Activity {
 			LinearLayout rl = (LinearLayout) rootView.findViewById(R.id.rl);
 			rl.setOrientation(LinearLayout.VERTICAL);
 
-			final TextView zAccleration = new TextView(rootView.getContext());
 			
 			temp = new TextView (rootView.getContext());
 			
-			stepstv = new TextView(rootView.getContext());
+			stepstv = new TextView (rootView.getContext());
+			stepstv.setGravity(Gravity.CENTER);
+			
 			stepstv.setTextSize(20);
-			stateTV = (TextView) rootView.findViewById(R.id.label1);
+			//stateTV = (TextView) rootView.findViewById(R.id.label1);
 			refresh = (Button) rootView.findViewById(R.id.Refresh);
 			refresh.setWidth(800);
 			refresh.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +135,7 @@ public class MainActivity extends Activity {
 			//zAccleration.setText("OVERRIDE");
 			stepstv.setText("Steps: 0");
 
-			rl.addView(zAccleration); // add textviews to layout
+
 			rl.addView(stepstv);
 			rl.addView(temp);
 
@@ -147,7 +149,7 @@ public class MainActivity extends Activity {
 																								// sensor
 
 
-			SensorEventListener a = new AccelerationEventListener(zAccleration, rootView.getContext());
+			SensorEventListener a = new AccelerationEventListener(rootView.getContext());
 			sensorManager.registerListener(a, accSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
 			return rootView;
@@ -156,12 +158,12 @@ public class MainActivity extends Activity {
 
 	static public class AccelerationEventListener implements SensorEventListener {
 
-		TextView output;
 		Context context;
 
-		public AccelerationEventListener(TextView outputView, Context mainContext) {
-			output = outputView;
+		public AccelerationEventListener(Context mainContext) {
+
 			context = mainContext;
+			
 		}
 
 		@Override
