@@ -136,7 +136,7 @@ public class MainActivity extends Activity {
 
 
 			//zAccleration.setText("OVERRIDE");
-			stepstv.setText("Steps: 0");
+			stepstv.setText("OVERRIDE");
 
 
 			rl.addView(stepstv);
@@ -152,7 +152,7 @@ public class MainActivity extends Activity {
 																								// sensor
 
 
-			SensorEventListener a = new AccelerationEventListener(rootView.getContext());
+			SensorEventListener a = new AccelerationEventListener(stepstv, rootView.getContext());
 			sensorManager.registerListener(a, accSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
 			return rootView;
@@ -160,11 +160,13 @@ public class MainActivity extends Activity {
 	}
 
 	static public class AccelerationEventListener implements SensorEventListener {
-
+		
+		TextView output_steps;
 		Context context;
 
-		public AccelerationEventListener(Context mainContext) {
-
+		public AccelerationEventListener(TextView output, Context mainContext) {
+			
+			output_steps = output;
 			context = mainContext;
 			
 		}
@@ -206,7 +208,7 @@ public class MainActivity extends Activity {
 					if (crossover > threshold) {
 						state = 0;
 						steps++;
-						stepstv.setText("Steps: " + String.valueOf(steps));
+						output_steps.setText("Steps: " + String.valueOf(steps));
 					}
 					break;
 				}
