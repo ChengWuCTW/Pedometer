@@ -26,8 +26,6 @@ public class MainActivity extends Activity {
 	static float lowPassOut_Y;
 	static float lowPassOut_X;
 	static float magnitude;
-	//static double zMaxAccel = 0; // the highest acceleration in the z axis
-	//static double zMinAccel = 0; // the highest deceleration in the z axis
 	static Button refresh; // reference to the refresh button
 	static float averagedData; // average of range of data points
 	static float previousAverage = 0.00f; // average data calculated previously
@@ -66,7 +64,7 @@ public class MainActivity extends Activity {
 		for (int i = 0; i < data.size(); i++) {
 			sum += data.get(i);
 		}
-		crossover =  sum / data.size();
+		//threshold =  sum / data.size();
 		return sum/data.size();
 	}
 	
@@ -120,7 +118,7 @@ public class MainActivity extends Activity {
 			stepstv.setGravity(Gravity.CENTER);
 			
 			stepstv.setTextSize(20);
-			//stateTV = (TextView) rootView.findViewById(R.id.label1);
+
 			refresh = (Button) rootView.findViewById(R.id.Refresh);
 			refresh.setWidth(800);
 			refresh.setOnClickListener(new View.OnClickListener() {
@@ -128,14 +126,13 @@ public class MainActivity extends Activity {
 				
 				@Override
 				public void onClick(View v) { // reset data on click
-					//float[] empty = { 0, 0, 0 };
+					calibration.clear();
 					steps = 0;
-					stepstv.setText("Steps: " + steps);
 				}
 			});
 
 
-			//zAccleration.setText("OVERRIDE");
+
 			stepstv.setText("OVERRIDE");
 
 
@@ -152,7 +149,7 @@ public class MainActivity extends Activity {
 																								// sensor
 
 
-			SensorEventListener a = new AccelerationEventListener(stepstv, rootView.getContext());
+			SensorEventListener a = new AccelerationEventListener(stepstv);
 			sensorManager.registerListener(a, accSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
 			return rootView;
@@ -162,12 +159,10 @@ public class MainActivity extends Activity {
 	static public class AccelerationEventListener implements SensorEventListener {
 		
 		TextView output_steps;
-		Context context;
 
-		public AccelerationEventListener(TextView output, Context mainContext) {
+		public AccelerationEventListener(TextView output) {
 			
 			output_steps = output;
-			context = mainContext;
 			
 		}
 
@@ -182,61 +177,44 @@ public class MainActivity extends Activity {
 			
 			magnitude_of_xyz(lowPassOut_X, lowPassOut_Y, lowPassOut_Z);
 
-			dataPoints.add(magnitude);
+			
 			
 			if (calibration.size() <= 100) {
 				calibration.add(magnitude);
+				threshold = averageData(calibration);
 			}
 			
-			threshold = averageData(calibration);
-	
 			
-			temp.setText("Magnitude is: "+ magnitude);
+			else{
+				dataPoints.add(magnitude);
 
-			if (dataPoints.size() > 4) { // begin when enough data is collected
-				//previousAverage = averagedData; // record previous average
-				//averagedData = averageData(dataPoints); // calculate new average
-				refresh.setText("Reset");
+				temp.setText("Magnitude is: "+ magnitude);
+
+				if (dataPoints.size() > 4) {
+					
+					crossover = averageData(dataPoints);
+
+					refresh.setText("Refresh");
 				
-				switch (state) {
-				case 0:{
-					if (crossover < threshold){
-						state = 1;
+					switch (state) {
+					case 0:{
+						if (crossover < threshold){
+							state = 1;
+						}
 					}
-				}
-				case 1: {
-					if (crossover > threshold) {
-						state = 0;
-						steps++;
-						output_steps.setText("Steps: " + String.valueOf(steps));
+					case 1: {
+						if (crossover > threshold) {
+							state = 0;
+							steps++;
+							output_steps.setText("Steps: " + String.valueOf(steps));
+						}
+						break;
 					}
-					break;
-				}
-				/*case 2: {
-					if (previousAverage < averagedData && averagedData < 0) {
-						state = 2;
 					}
-					break;
+					dataPoints.clear(); // clear data points
 				}
-				case 3: {
-					if (previousAverage < averagedData && averagedData < -0.5f) {
-						state = 3;
-					}
-					break;
-				}
-				case 4: {
-					if (averagedData > 0 && averagedData > 0.5f) {
-						state = 0;
-						steps++;
-						stepstv.setText("Steps: " + String.valueOf(steps));
-					}
-
-					break;
-				}*/
-				}
-				dataPoints.clear(); // clear data points
 			}
-		}
+			}
 
 		@Override
 		public void onAccuracyChanged(Sensor sensor, int accuracy) {
