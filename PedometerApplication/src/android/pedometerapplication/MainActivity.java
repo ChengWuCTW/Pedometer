@@ -25,8 +25,8 @@ public class MainActivity extends Activity {
 	static float lowPassOut_Y;
 	static float lowPassOut_X;
 	static float magnitude;
-	static double zMaxAccel = 0; // the highest acceleration in the z axis
-	static double zMinAccel = 0; // the highest deceleration in the z axis
+	//static double zMaxAccel = 0; // the highest acceleration in the z axis
+	//static double zMinAccel = 0; // the highest deceleration in the z axis
 	static Button refresh; // reference to the refresh button
 	static float averagedData; // average of range of data points
 	static float previousAverage = 0.00f; // average data calculated previously
@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
 	static int state = 0; // stores current state of step
 	static int steps = 0; // records number of steps
 	static TextView stepstv; //textview displaying number of steps
+	static TextView temp; //TEMPORARY VARIABLE
 	static ArrayList<Float> dataPoints = new ArrayList<Float>(); // initializes
 																	// arraylist
 																	// for data
@@ -65,12 +66,12 @@ public class MainActivity extends Activity {
 		return sum / data.size();
 	}
 	
-	public static float pythagoras(float a, float b, float c) {
+	public static float magnitude_of_xyz(float a, float b, float c) {
 		float temp = 0.0f;
 		
 		temp = a*a + b*b + c*c;
 		
-		magnitude = Math.sqrt(temp);
+		magnitude = (float)Math.sqrt(temp);
 		
 		return magnitude;
 	}
@@ -109,30 +110,32 @@ public class MainActivity extends Activity {
 			rl.setOrientation(LinearLayout.VERTICAL);
 
 			final TextView zAccleration = new TextView(rootView.getContext());
+			
+			temp = new TextView (rootView.getContext());
+			
 			stepstv = new TextView(rootView.getContext());
 			stepstv.setTextSize(20);
 			stateTV = (TextView) rootView.findViewById(R.id.label1);
 			refresh = (Button) rootView.findViewById(R.id.Refresh);
 			refresh.setWidth(800);
 			refresh.setOnClickListener(new View.OnClickListener() {
+				
+				
 				@Override
-			///*	public void onClick(View v) { // reset data on click
-			//		float[] empty = { 0, 0, 0 };
-			//		graph.addPoint(empty);
-			//		zMaxAccel = 0;
-			//		zMinAccel = 0;
-			//		steps = 0;
-			//		stepstv.setText("0");
-			//	
-			//	}
-			//});*/
+				public void onClick(View v) { // reset data on click
+					//float[] empty = { 0, 0, 0 };
+					steps = 0;
+					stepstv.setText("Steps: 0");
+				}
+			});
 
-			//stateTV.setText("State:");
-			zAccleration.setText("OVERRIDE");
+
+			//zAccleration.setText("OVERRIDE");
 			stepstv.setText("Steps: 0");
 
 			rl.addView(zAccleration); // add textviews to layout
 			rl.addView(stepstv);
+			rl.addView(temp);
 
 			SensorManager sensorManager = (SensorManager) rootView.getContext().getSystemService(SENSOR_SERVICE); // request
 																													// sensor
@@ -166,22 +169,17 @@ public class MainActivity extends Activity {
 			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
 				
 				oldData = event.values;
+				lowpass(oldData, event.values);
 
-				//output.setText("Acceleration(z);\nz: " + String.valueOf(event.values[2])
-				//		+ "\nMaximum acceleration(z);\nz: " + zMaxAccel + "\nMinumum Acceleration(z): " + zMinAccel);
 			}
+			
+			magnitude_of_xyz(lowPassOut_X, lowPassOut_Y, lowPassOut_Z);
 
-			if (event.values[2] >= zMaxAccel) // update max and min values
-				zMaxAccel = event.values[2];
+			dataPoints.add(magnitude);
+			
+			temp.setText("Magnitude is: "+ magnitude);
 
-			if (event.values[2] < zMinAccel)
-				zMinAccel = event.values[2];
-
-			dataPoints.add(lowPassOut);
-			// dataPoints.add(event.values[2]); //add data points to arraylist
-			// to be averaged
-
-			if (dataPoints.size() > 4) { // begin when enough data is collected
+			/*if (dataPoints.size() > 4) { // begin when enough data is collected
 				previousAverage = averagedData; // record previous average
 				averagedData = averageData(dataPoints); // calculate new average
 				refresh.setText("Reset");
@@ -230,7 +228,7 @@ public class MainActivity extends Activity {
 				}
 				}
 				dataPoints.clear(); // clear data points
-			}
+			}*/
 		}
 
 		@Override
