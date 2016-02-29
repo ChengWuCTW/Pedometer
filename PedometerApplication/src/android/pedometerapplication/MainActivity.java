@@ -3,9 +3,7 @@ package android.pedometerapplication;
 import android.app.Activity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import android.app.Fragment;
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -27,8 +25,6 @@ public class MainActivity extends Activity {
 	static float lowPassOut_X;
 	static float magnitude;
 	static Button refresh; // reference to the refresh button
-	static float averagedData; // average of range of data points
-	static float previousAverage = 0.00f; // average data calculated previously
 	static float[] oldData = { 0.00f, 0.00f, 0.00f };
 	static int state = 0; // stores current state of step
 	static int steps = 0; // records number of steps
@@ -43,6 +39,7 @@ public class MainActivity extends Activity {
 	static float crossover = 0.0f;
 	
 
+	//LOWPASS FILTER USED TO REDUCE NOISE FROM LINEAR ACCELEROMETER
 	static public float[] lowpass(float[] oldIn, float[] in) {
 
 		float[] out = new float[in.length];
@@ -58,16 +55,21 @@ public class MainActivity extends Activity {
 
 		return out;
 	}
-
+	
+	
+	
+	//COMPUTES THE AVERAGE OF THE ARRAYLIST VALUES
 	public static float averageData(ArrayList<Float> data) {
 		float sum = 0;
 		for (int i = 0; i < data.size(); i++) {
 			sum += data.get(i);
 		}
-		//threshold =  sum / data.size();
 		return sum/data.size();
 	}
 	
+	
+	
+	//CALCULATES THE MAGNITUDE OF 3 AXIS
 	public static float magnitude_of_xyz(float a, float b, float c) {
 		float temp = 0.0f;
 		
@@ -106,8 +108,9 @@ public class MainActivity extends Activity {
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container, false); // inflate
-																						// layout
+			View rootView = inflater.inflate(R.layout.fragment_main, container, false); 
+																						
+			
 			LinearLayout rl = (LinearLayout) rootView.findViewById(R.id.rl);
 			rl.setOrientation(LinearLayout.VERTICAL);
 
@@ -116,7 +119,6 @@ public class MainActivity extends Activity {
 			
 			stepstv = new TextView (rootView.getContext());
 			stepstv.setGravity(Gravity.CENTER);
-			
 			stepstv.setTextSize(20);
 
 			refresh = (Button) rootView.findViewById(R.id.Refresh);
