@@ -1,8 +1,8 @@
 package android.pedometerapplication;
 
-import android.app.Activity;
-
 import java.util.ArrayList;
+
+import android.app.Activity;
 import android.app.Fragment;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -25,11 +25,15 @@ public class MainActivity extends Activity {
 	static float lowPassOut_X;
 	static float magnitude;
 	static Button refresh; // reference to the refresh button
+	static Button pause_btn;
+	static Button resume_btn;
+	static boolean pauseboo = false;
 	static float[] oldData = { 0.00f, 0.00f, 0.00f };
 	static int state = 0; // stores current state of step
 	static int steps = 0; // records number of steps
 	static TextView stepstv; //textview displaying number of steps
 	static TextView temp; //TEMPORARY VARIABLE
+	static TextView temp1,temp2,temp3,temp4,temp5,temp6;
 	static ArrayList<Float> dataPoints = new ArrayList<Float>(); // initializes arraylist for data points
 
 	//static TextView stateTV;
@@ -111,18 +115,36 @@ public class MainActivity extends Activity {
 			View rootView = inflater.inflate(R.layout.fragment_main, container, false); 
 																						
 			
-			LinearLayout rl = (LinearLayout) rootView.findViewById(R.id.rl);
-			rl.setOrientation(LinearLayout.VERTICAL);
+			FrameLayout rl = (FrameLayout) rootView.findViewById(R.id.rl);
 
 			
 			temp = new TextView (rootView.getContext());
+			temp1 = new TextView (rootView.getContext());
+			temp2 = new TextView (rootView.getContext());
+			temp3 = new TextView (rootView.getContext());
+			temp4 = new TextView (rootView.getContext());
+			temp5 = new TextView (rootView.getContext());
+			temp6 = new TextView (rootView.getContext());
+			
 			
 			stepstv = new TextView (rootView.getContext());
 			stepstv.setGravity(Gravity.CENTER);
 			stepstv.setTextSize(20);
 
+
+			stepstv.setText("OVERRIDE");
+
+			rl.addView(temp);
+			rl.addView(temp1);
+			rl.addView(temp2);
+			rl.addView(temp3);
+			rl.addView(temp4);
+			rl.addView(temp5);
+			rl.addView(temp6);
+			rl.addView(stepstv);
+			
+			
 			refresh = (Button) rootView.findViewById(R.id.Refresh);
-			refresh.setWidth(800);
 			refresh.setOnClickListener(new View.OnClickListener() {
 				
 				
@@ -132,14 +154,25 @@ public class MainActivity extends Activity {
 					steps = 0;
 				}
 			});
-
-
-
-			stepstv.setText("OVERRIDE");
-
-
-			rl.addView(stepstv);
-			rl.addView(temp);
+			
+			pause_btn = (Button) rootView.findViewById(R.id.pause);
+			pause_btn.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					pauseboo = true;
+				}
+			});
+			
+			resume_btn = (Button) rootView.findViewById(R.id.resume);
+			resume_btn.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					pauseboo = false;
+					
+				}
+			});
 
 			SensorManager sensorManager = (SensorManager) rootView.getContext().getSystemService(SENSOR_SERVICE); // request
 																													// sensor
@@ -157,6 +190,8 @@ public class MainActivity extends Activity {
 			return rootView;
 		}
 	}
+	
+	
 
 	static public class AccelerationEventListener implements SensorEventListener {
 		
@@ -181,16 +216,20 @@ public class MainActivity extends Activity {
 
 			
 			
-			if (calibration.size() <= 200) {
+			if (calibration.size() <= 100) {
 				calibration.add(magnitude);
 				threshold = averageData(calibration);
+				if (threshold < 2) {
+					calibration.clear();
+				}
 			}
 			
 			
 			else{
 				dataPoints.add(magnitude);
 
-				temp.setText("Magnitude is: "+ magnitude);
+				//temp.setText("Magnitude is: "+ magnitude);
+				temp.setText("");
 
 				if (dataPoints.size() > 4) {
 					
@@ -198,6 +237,7 @@ public class MainActivity extends Activity {
 
 					refresh.setText("Refresh");
 				
+					if(!pauseboo){
 					switch (state) {
 					case 0:{
 						if (crossover < threshold){
@@ -227,6 +267,7 @@ public class MainActivity extends Activity {
 					}
 					default:
 						break;
+					}
 					}
 					dataPoints.clear(); // clear data points
 				}
