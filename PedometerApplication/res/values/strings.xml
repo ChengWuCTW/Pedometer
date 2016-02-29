@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PedometerApplication</string>
+    <string name="action_settings">Settings</string>
+    <string name="Refresh">Reset and Calibrate</string>
+    <string name="Pause">Pause</string>
+    <string name="resume">Resume</string>
+
+</resources>
