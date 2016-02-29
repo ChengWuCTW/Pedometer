@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -130,6 +131,7 @@ public class MainActivity extends Activity {
 			stepstv = new TextView (rootView.getContext());
 			stepstv.setGravity(Gravity.CENTER);
 			stepstv.setTextSize(20);
+			stepstv.setTextColor(Color.WHITE);
 
 
 			stepstv.setText("OVERRIDE");

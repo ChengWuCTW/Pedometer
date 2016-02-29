@@ -10,6 +10,7 @@
             android:id="@+id/Refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#ffffff"
             android:layout_gravity = "top|center"
             android:text="@string/Refresh" />
 
@@ -25,11 +26,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity = "bottom"
+            android:textColor = "#ffffff"
             android:text="@string/Pause" />
         
         <Button android:id="@+id/resume"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#ffffff"
             android:layout_gravity="bottom|right"
             android:text="@string/resume"/>
 
