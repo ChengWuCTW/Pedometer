@@ -39,7 +39,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -190,19 +189,6 @@ public class MainActivity extends Activity {
 																						
 			
 			FrameLayout rl = (FrameLayout) rootView.findViewById(R.id.rl);
-
-			// temp variables are used to move other text down because we weren't
-			// too sure how to do it efficiently
-			
-			// this is very lazy programming
-			
-			//temp = new TextView (rootView.getContext());
-			//temp1 = new TextView (rootView.getContext());
-			//temp2 = new TextView (rootView.getContext());
-			//temp3 = new TextView (rootView.getContext());
-			//temp4 = new TextView (rootView.getContext());
-			//temp5 = new TextView (rootView.getContext());
-			//temp6 = new TextView (rootView.getContext());
 			
 			
 			// Steps textview orientation, size, colour
@@ -237,13 +223,6 @@ public class MainActivity extends Activity {
 
 			
 			// Adding text on screen in order specified below
-			//rl.addView(temp);
-			//rl.addView(temp1);
-			//rl.addView(temp2);
-			//rl.addView(temp3);
-			//rl.addView(temp4);
-			//rl.addView(temp5);
-			//rl.addView(temp6);
 			rl.addView(stepstv);
 			rl.addView(distancetv);
 			rl.addView(caloriesBurnedtv);
@@ -337,7 +316,7 @@ public class MainActivity extends Activity {
 			if (calibration.size() <= 100) {
 				calibration.add(magnitude);
 				threshold = averageData(calibration);
-				if (threshold < 2) {
+				if (threshold < 5) {
 					calibration.clear();
 				}
 			}
@@ -347,10 +326,6 @@ public class MainActivity extends Activity {
 			// Pedometer finite state machine calculations occur in this else statement
 			else{
 				dataPoints.add(magnitude);
-				
-				Log.d("temp", "REACH");
-				
-				//temp.setText("");
 
 				if (dataPoints.size() > 4) {
 					
