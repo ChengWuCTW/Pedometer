@@ -195,13 +195,13 @@ public class MainActivity extends Activity {
 			
 			// this is very lazy programming
 			
-			temp = new TextView (rootView.getContext());
-			temp1 = new TextView (rootView.getContext());
-			temp2 = new TextView (rootView.getContext());
-			temp3 = new TextView (rootView.getContext());
-			temp4 = new TextView (rootView.getContext());
-			temp5 = new TextView (rootView.getContext());
-			temp6 = new TextView (rootView.getContext());
+			//temp = new TextView (rootView.getContext());
+			//temp1 = new TextView (rootView.getContext());
+			//temp2 = new TextView (rootView.getContext());
+			//temp3 = new TextView (rootView.getContext());
+			//temp4 = new TextView (rootView.getContext());
+			//temp5 = new TextView (rootView.getContext());
+			//temp6 = new TextView (rootView.getContext());
 			
 			
 			// Steps textview orientation, size, colour
@@ -213,15 +213,19 @@ public class MainActivity extends Activity {
 			
 			// Distance textview orientation, size, colour
 			distancetv = new TextView (rootView.getContext());
-			distancetv.setGravity(Gravity.CENTER);
+			distancetv.setGravity(Gravity.TOP|Gravity.END);
+			distancetv.setX(-42f);
+			distancetv.setY(135f);
 			distancetv.setTextSize(15);
 			distancetv.setTextColor(Color.BLACK);
 			
 			
 			// Calories textview orientation, size, colour
 			caloriesBurnedtv = new TextView (rootView.getContext());
-			caloriesBurnedtv.setGravity(Gravity.CENTER);
+			caloriesBurnedtv.setGravity(Gravity.TOP|Gravity.START);
 			caloriesBurnedtv.setTextSize(15);
+			caloriesBurnedtv.setX(18f);
+			caloriesBurnedtv.setY(135f);
 			caloriesBurnedtv.setTextColor(Color.BLACK);
 			
 
@@ -232,13 +236,13 @@ public class MainActivity extends Activity {
 
 			
 			// Adding text on screen in order specified below
-			rl.addView(temp);
-			rl.addView(temp1);
-			rl.addView(temp2);
-			rl.addView(temp3);
-			rl.addView(temp4);
-			rl.addView(temp5);
-			rl.addView(temp6);
+			//rl.addView(temp);
+			//rl.addView(temp1);
+			//rl.addView(temp2);
+			//rl.addView(temp3);
+			//rl.addView(temp4);
+			//rl.addView(temp5);
+			//rl.addView(temp6);
 			rl.addView(stepstv);
 			rl.addView(distancetv);
 			rl.addView(caloriesBurnedtv);
