@@ -39,6 +39,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -97,7 +98,7 @@ public class MainActivity extends Activity {
 	// CALCULATES DISTANCE TRAVELED
 	static public float distance(int n) {
 		float temp;
-		temp = n*steps;
+		temp = n*alpha;
 		return temp;
 	}
 	
@@ -214,8 +215,8 @@ public class MainActivity extends Activity {
 			// Distance textview orientation, size, colour
 			distancetv = new TextView (rootView.getContext());
 			distancetv.setGravity(Gravity.TOP|Gravity.END);
-			distancetv.setX(-42f);
-			distancetv.setY(135f);
+			distancetv.setX(-42.0f);
+			distancetv.setY(135.0f);
 			distancetv.setTextSize(15);
 			distancetv.setTextColor(Color.BLACK);
 			
@@ -224,8 +225,8 @@ public class MainActivity extends Activity {
 			caloriesBurnedtv = new TextView (rootView.getContext());
 			caloriesBurnedtv.setGravity(Gravity.TOP|Gravity.START);
 			caloriesBurnedtv.setTextSize(15);
-			caloriesBurnedtv.setX(18f);
-			caloriesBurnedtv.setY(135f);
+			caloriesBurnedtv.setX(18.0f);
+			caloriesBurnedtv.setY(135.0f);
 			caloriesBurnedtv.setTextColor(Color.BLACK);
 			
 
@@ -347,13 +348,13 @@ public class MainActivity extends Activity {
 			else{
 				dataPoints.add(magnitude);
 				
-				temp.setText("");
+				Log.d("temp", "REACH");
+				
+				//temp.setText("");
 
 				if (dataPoints.size() > 4) {
 					
 					crossover = averageData(dataPoints);
-
-					refresh.setText("Refresh");
 				
 					if(!pauseboo){
 					switch (state) {
@@ -377,6 +378,7 @@ public class MainActivity extends Activity {
 						if (crossover > threshold) {
 							state = 0;
 							steps++;
+							
 							output_steps.setText("Steps: " + String.valueOf(steps));
 							output_distance.setText("Distance walked: " + String.format("%.3g%n", distance(steps)) + " m");
 							output_caloriesBurned.setText("Calories burned: " + String.format("%.1g%n", calories(steps)) + " cal");
