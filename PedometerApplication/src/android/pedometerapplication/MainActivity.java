@@ -21,12 +21,6 @@
  * 
  */
 
-
-
-
-
-
-
 package android.pedometerapplication;
 
 import java.util.ArrayList;
